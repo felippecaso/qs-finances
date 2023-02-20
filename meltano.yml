@@ -23,6 +23,8 @@ plugins:
       files:
       - path: ./data/raw/btg_investments
         type: investments_transactions
+      - path: ./data/raw/btg_credit
+        type: credit_transactions
   loaders:
   - name: target-csv
     variant: meltanolabs
