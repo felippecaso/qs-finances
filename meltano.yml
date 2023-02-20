@@ -1,0 +1,32 @@
+version: 1
+default_environment: dev
+project_id: 3ac50c18-a099-4e52-854f-2835a667e40f
+
+environments:
+- name: dev
+- name: staging
+- name: prod
+
+plugins:
+  extractors:
+  - name: tap-btg
+    namespace: tap_btg
+    pip_url: git+https://github.com/felippecaso/tap-btg.git
+    executable: tap-btg
+    capabilities:
+    - state
+    - catalog
+    - discover
+    - about
+    - stream-maps
+    config:
+      files:
+      - path: ./data/raw/btg_investments
+        type: investments_transactions
+  loaders:
+  - name: target-csv
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/target-csv.git
+    config:
+      output_path_prefix: ./data/catalog/
+      overwrite_behavior: replace_file

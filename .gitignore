@@ -1,0 +1,6 @@
+/venv
+/.meltano
+.env
+.DS_Store
+/data/catalog
+/data/raw
