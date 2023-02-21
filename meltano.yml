@@ -25,6 +25,8 @@ plugins:
         type: investments_transactions
       - path: ./data/raw/btg_credit
         type: credit_transactions
+      - path: ./data/raw/btg_banking
+        type: banking_transactions
   loaders:
   - name: target-csv
     variant: meltanolabs
