@@ -20,6 +20,12 @@ plugins:
         type: credit_transactions
       - path: ./data/raw/btg_banking
         type: banking_transactions
+  - name: tap-nomad
+    namespace: tap_nomad
+    pip_url: git+https://github.com/felippecaso/tap-nomad.git
+    config:
+      files:
+      - path: ./data/raw/nomad
   - name: tap-csv
     variant: meltanolabs
     pip_url: git+https://github.com/MeltanoLabs/tap-csv.git
