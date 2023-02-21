@@ -27,6 +27,28 @@ plugins:
         type: credit_transactions
       - path: ./data/raw/btg_banking
         type: banking_transactions
+  - name: tap-csv
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/tap-csv.git
+    config:
+      files:
+      - path: ./data/raw/caju
+        entity: caju_transactions
+        keys: []
+      - path: ./data/raw/alelo
+        entity: alelo_transactions
+        keys: []
+      - path: ./data/raw/bb
+        entity: bb_transactions
+        keys: []
+        encoding: latin-1
+      - path: ./data/raw/c6
+        entity: c6_transactions
+        keys: []
+      - path: ./data/raw/nubank
+        entity: nubank_transactions
+        keys: []
+
   loaders:
   - name: target-csv
     variant: meltanolabs
