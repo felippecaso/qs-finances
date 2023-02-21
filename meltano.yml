@@ -12,13 +12,6 @@ plugins:
   - name: tap-btg
     namespace: tap_btg
     pip_url: git+https://github.com/felippecaso/tap-btg.git
-    executable: tap-btg
-    capabilities:
-    - state
-    - catalog
-    - discover
-    - about
-    - stream-maps
     config:
       files:
       - path: ./data/raw/btg_investments
