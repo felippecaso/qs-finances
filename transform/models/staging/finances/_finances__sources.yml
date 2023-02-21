@@ -1,0 +1,46 @@
+version: 2
+
+sources:
+  - name: finances
+    meta:
+      external_location: '{{ env_var("MELTANO_PROJECT_ROOT") }}/data/catalog/{identifier}.csv'
+    tables:
+      - name: nomad_transactions
+        identifier: nomad_transactions
+        tests:
+          - dbt_utils.unique_combination_of_columns:
+              combination_of_columns: 
+                - date
+                - amount
+                - description
+                - status
+      - name: itau_transactions
+        identifier: itau_transactions
+        tests:
+          - dbt_utils.unique_combination_of_columns:
+              combination_of_columns: 
+                - date
+                - amount
+                - description
+      - name: caju_transactions
+        identifier: caju_transactions
+        columns:
+          - name: deal_id
+            tests:
+              - unique:
+                  where: tipo_de_acao NOT IN ('Depósito de benefício', 'Transferência de saldo')
+      - name: btg_banking_transactions
+        identifier: btg_banking_transactions
+        tests:
+          - dbt_utils.unique_combination_of_columns:
+              combination_of_columns: 
+                - date
+                - Transacao
+                - Descricao
+                - Valor
+      - name: btg_investments_transactions
+        identifier: btg_investments_transactions
+      - name: btg_credit_transactions
+        identifier: btg_credit_transactions
+      - name: nubank_transactions
+        identifier: nubank_transactions

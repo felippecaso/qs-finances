@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: transactions
+    columns:
+      - name: transaction_id
+      - name: date
+      - name: amount
+      - name: description
+      - name: currency
+      - name: account
+      - name: category
+        tests:
+          - relationships:
+              to: ref('finances_categories')
+              field: category
+      - name: category_source
+        tests:
+          - accepted_values:
+              values: ['manual', 'guess', 'confirmed_guess']
+              config:
+                where: "category <> ''"
+
+  - name: transactions_category_guesses
+    config:
+      packages:
+        - pandas
+        - textblob

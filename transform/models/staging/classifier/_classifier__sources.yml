@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: classifier
+    schema: main
+    tables:
+      - name: transactions_category_guesses
+        columns:
+          - name: transaction_id
+            tests:
+              - unique
+          - name: category

@@ -1,0 +1,5 @@
+version: 2
+
+seeds:
+  - name: btg_banking_automatic_yields
+  - name: finances_categories

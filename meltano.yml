@@ -55,3 +55,18 @@ plugins:
     config:
       output_path_prefix: ./data/catalog/
       overwrite_behavior: replace_file
+
+  transformers:
+  - name: dbt-duckdb
+    variant: jwills
+    pip_url: dbt-core~=1.4.0 dbt-duckdb~=1.4.0
+    config:
+      path: $MELTANO_PROJECT_ROOT/data/catalog/qsmds.db
+      schema: main
+      project_dir: $MELTANO_PROJECT_ROOT/transform
+jobs:
+- name: load-finances
+  tasks:
+  - tap-csv target-csv
+  - tap-btg target-csv
+  - tap-nomad target-csv

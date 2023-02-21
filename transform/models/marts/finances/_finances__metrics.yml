@@ -1,0 +1,12 @@
+version: 2
+
+metrics:
+  - name: total_amount
+    label: Total amount
+    model: ref('transactions')
+    
+    calculation_method: sum
+    expression: amount
+
+    timestamp: date
+    time_grains: [day, week, month, year]
