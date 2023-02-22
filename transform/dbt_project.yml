@@ -5,7 +5,6 @@ config-version: 2
 profile: meltano
 
 model-paths: ["models"]
-seed-paths: ["seeds"]
 target-path: ../.meltano/transformers/dbt/target
 log-path: logs
 

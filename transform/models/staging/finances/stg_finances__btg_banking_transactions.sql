@@ -29,7 +29,7 @@ SELECT LAST_DAY(ay.month)::DATETIME AS date,
        'BRL' AS currency,
        'BTG Banking' AS account,
        1 AS rn
-  FROM {{ ref('btg_banking_automatic_yields') }} AS ay
+  FROM {{ source('finances', 'btg_banking_automatic_yields') }} AS ay
 )
 
 SELECT MD5(CONCAT(ut.rn, '-', ut.date, '-', ut.amount, '-', ut.account)) AS transaction_id,
