@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: transactions
+    columns:
+      - name: transaction_id
+      - name: date
+      - name: amount
+      - name: description
+      - name: currency
+      - name: account

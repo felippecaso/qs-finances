@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: int_debit_transactions_unioned
+  - name: int_credit_transactions_unioned

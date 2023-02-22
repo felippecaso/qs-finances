@@ -29,28 +29,87 @@ plugins:
   - name: tap-csv
     variant: meltanolabs
     pip_url: git+https://github.com/MeltanoLabs/tap-csv.git
+  - name: tap-csv-caju
+    inherit_from: tap-csv
     config:
       files:
       - path: ./data/raw/caju
         entity: caju_transactions
         keys: []
+      stream_maps:
+        caju_transactions: 
+          status: status
+          date: data
+          amount: valor
+          action: record['ação']
+          action_type: record['tipo de ação']
+          target_category: record['categoria destino']
+          vendor: estabelecimento
+          deal_id: record['deal id']
+          __else__: __NULL__
+  - name: tap-csv-alelo
+    inherit_from: tap-csv
+    config:
+      files:
       - path: ./data/raw/alelo
         entity: alelo_transactions
         keys: []
+      stream_maps:
+        alelo_transactions: 
+          description: title
+          date: datetime.datetime.fromisoformat(date)
+          title: __NULL__
+  - name: tap-csv-bb
+    inherit_from: tap-csv
+    config:
+      files:
       - path: ./data/raw/bb
         entity: bb_transactions
         keys: []
         encoding: latin-1
+      stream_maps:
+        bb_transactions: 
+          date: datetime.datetime.strptime(Data, '%d/%m/%Y')
+          amount: Valor
+          __else__: __NULL__
+  - name: tap-csv-c6
+    inherit_from: tap-csv
+    config:
+      files:
       - path: ./data/raw/c6
         entity: c6_transactions
         keys: []
+      stream_maps:
+        c6_transactions: 
+          date: datetime.datetime.fromisoformat(date)
+          description: title
+          title: __NULL__
+  - name: tap-csv-nubank
+    inherit_from: tap-csv
+    config:
+      files:
       - path: ./data/raw/nubank
         entity: nubank_transactions
         keys: []
+      stream_maps:
+        nubank_transactions: 
+          date: datetime.datetime.fromisoformat(date)
+          description: title
+          target_category: category
+          title: __NULL__
+          category: __NULL__
+  - name: tap-csv-itau
+    inherit_from: tap-csv
+    config:
+      files:
       - path: ./data/raw/itau
         entity: itau_transactions
         keys: []
         delimiter: ";"
+      stream_maps:
+        itau_transactions: 
+          date: datetime.datetime.strptime(date, '%d/%m/%Y')
+          amount: amount.replace(',', '.')
 
   loaders:
   - name: target-csv
@@ -59,3 +118,24 @@ plugins:
     config:
       output_path_prefix: ./data/catalog/
       overwrite_behavior: replace_file
+
+  transformers:
+  - name: dbt-duckdb
+    variant: jwills
+    pip_url: dbt-core~=1.4.0 dbt-duckdb~=1.4.0
+    config:
+      path: $MELTANO_PROJECT_ROOT/data/catalog/qsmds.db
+      schema: main
+      project_dir: $MELTANO_PROJECT_ROOT/transform
+
+jobs:
+- name: load-finances-to-csv
+  tasks:
+  - tap-csv-caju target-csv
+  - tap-csv-alelo target-csv
+  - tap-csv-bb target-csv
+  - tap-csv-c6 target-csv
+  - tap-csv-nubank target-csv
+  - tap-csv-itau target-csv
+  - tap-btg target-csv
+  - tap-nomad target-csv

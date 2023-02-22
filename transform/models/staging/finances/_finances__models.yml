@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: stg_finances__itau_transactions
+    columns:
+      - name: transaction_id
+        tests:
+          - unique
+
+  - name: stg_finances__nomad_transactions
+    columns:
+      - name: transaction_id
+        tests:
+          - unique
+
+  - name: stg_finances__caju_transactions
+    columns:
+      - name: transaction_id
+        tests:
+          - unique
+
+  - name: stg_finances__btg_banking_transactions
+    columns:
+      - name: transaction_id
+        tests:
+          - unique
+
+  - name: stg_finances__btg_investments_transactions
+    columns:
+      - name: transaction_id
+        tests:
+          - unique
