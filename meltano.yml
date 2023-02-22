@@ -130,9 +130,10 @@ plugins:
       project_dir: $MELTANO_PROJECT_ROOT/transform
 
   utilities:
-  - name: notebook
-    variant: matatika
-    pip_url: git+https://github.com/Matatika/utility-notebook.git
+  - name: jupyterlab
+    namespace: jupyterlab
+    pip_url: jupyterlab pandas duckdb
+    executable: jupyterlab
 
 jobs:
 - name: load-finances-to-csv
