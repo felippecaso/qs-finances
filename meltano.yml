@@ -47,6 +47,10 @@ plugins:
       - path: ./data/raw/nubank
         entity: nubank_transactions
         keys: []
+      - path: ./data/raw/itau
+        entity: itau_transactions
+        keys: []
+        delimiter: ";"
 
   loaders:
   - name: target-csv
