@@ -28,16 +28,15 @@ sources:
           - name: deal_id
             tests:
               - unique:
-                  where: tipo_de_acao NOT IN ('Depósito de benefício', 'Transferência de saldo')
+                  where: action_type NOT IN ('Depósito de benefício', 'Transferência de saldo')
       - name: btg_banking_transactions
         identifier: btg_banking_transactions
         tests:
           - dbt_utils.unique_combination_of_columns:
               combination_of_columns: 
                 - date
-                - Transacao
-                - Descricao
-                - Valor
+                - description
+                - amount
       - name: btg_investments_transactions
         identifier: btg_investments_transactions
       - name: btg_credit_transactions

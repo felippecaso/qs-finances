@@ -1,8 +1,6 @@
 version: 2
 
 models:
-  - name: base_finances__btg_banking_transactions
-
   - name: stg_finances__itau_transactions
     columns:
       - name: transaction_id

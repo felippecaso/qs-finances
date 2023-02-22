@@ -6,7 +6,7 @@ SELECT * FROM {{ source('finances', 'nubank_transactions') }}
 transactions AS (
 SELECT s.date,
        s.amount,
-       s.title AS description,
+       s.description,
        'BRL' AS currency,
        'Nubank' AS account,
        DATE_TRUNC('month', s.date) AS bill_month

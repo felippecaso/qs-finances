@@ -4,7 +4,7 @@ SELECT * FROM {{ source('finances', 'itau_transactions') }}
 ),
 
 transactions AS (
-SELECT s.date::DATE AS date,
+SELECT s.date,
        s.amount AS amount,
        s.description AS description,
        'BRL' AS currency,

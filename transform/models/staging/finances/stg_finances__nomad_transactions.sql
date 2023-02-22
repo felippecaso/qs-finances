@@ -4,7 +4,7 @@ SELECT * FROM {{ source('finances', 'nomad_transactions') }}
 ),
 
 transactions AS (
-SELECT s.date::DATE AS date,
+SELECT s.date,
        s.amount AS amount,
        s.description AS description,
        'USD' AS currency,

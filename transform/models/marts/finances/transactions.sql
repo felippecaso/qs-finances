@@ -40,22 +40,8 @@ SELECT t.transaction_id,
        t.currency,
        t.account,
        t.bill_month,
-       t.transaction_type,
-       COALESCE(tcg.category, NULL) AS category,
-       COALESCE(tcg.category_source, NULL) AS category_source
+       t.transaction_type
   FROM transactions_unioned AS t
-       LEFT JOIN {{ ref('stg_classifier__transactions_category_guesses') }} AS tcg
-       ON tcg.transaction_id = t.transaction_id
-
-{% if is_incremental() %}
-
-       LEFT JOIN {{ this }} AS this
-       ON this.transaction_id = t.transaction_id
-
- WHERE this.transaction_id IS NULL -- transaction does not exist in final table
-    OR (this.category_source = 'guess' OR this.category_source IS NULL) -- transaction exists, then select only guessed or null categories
-
-{% endif %}
 )
 
 SELECT * FROM final
