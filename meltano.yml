@@ -129,6 +129,16 @@ plugins:
       path: $MELTANO_PROJECT_ROOT/data/catalog/qsmds.duckdb
       project_dir: $MELTANO_PROJECT_ROOT/transform
 
+  utilities:
+  - name: jupyterlab
+    namespace: jupyterlab
+    pip_url: jupyterlab pandas duckdb
+    executable: jupyter
+    commands:
+      launch:
+        args: lab
+        description: Start lab server
+
 jobs:
 - name: load-finances-to-csv
   tasks:
