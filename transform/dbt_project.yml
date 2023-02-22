@@ -22,5 +22,4 @@ models:
     intermediate:
       +materialized: ephemeral
     marts:
-      +materialized: external
-      +format: parquet
+      +materialized: table

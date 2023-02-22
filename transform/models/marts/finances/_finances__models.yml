@@ -9,3 +9,9 @@ models:
       - name: description
       - name: currency
       - name: account
+
+  - name: transactions_category_guesses
+    config:
+      packages:
+        - pandas
+        - textblob

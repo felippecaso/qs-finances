@@ -124,10 +124,9 @@ plugins:
   transformers:
   - name: dbt-duckdb
     variant: jwills
-    pip_url: dbt-core~=1.4.0 dbt-duckdb~=1.4.0
+    pip_url: dbt-core~=1.4.0 dbt-duckdb~=1.4.0 pandas textblob
     config:
-      path: $MELTANO_PROJECT_ROOT/data/catalog/qsmds.db
-      schema: main
+      path: $MELTANO_PROJECT_ROOT/data/catalog/qsmds.duckdb
       project_dir: $MELTANO_PROJECT_ROOT/transform
 
 jobs:
