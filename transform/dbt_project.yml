@@ -18,8 +18,9 @@ clean-targets:
 models:
   qsmds:
     staging:
-      +materialized: view
+      +materialized: ephemeral
     intermediate:
       +materialized: ephemeral
     marts:
-      +materialized: table
+      +materialized: external
+      +format: parquet

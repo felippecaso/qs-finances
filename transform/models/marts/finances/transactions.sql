@@ -1,11 +1,3 @@
-{{
-  config(
-    materialized = 'incremental',
-    unique_key = 'transaction_id',
-    incremental_strategy = 'delete+insert',
-  )
-}}
-
 WITH 
 
 transactions_unioned AS (

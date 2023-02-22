@@ -7,6 +7,7 @@ meltano:
     dev:
       type: duckdb
       path: "{{ env_var('DBT_DUCKDB_PATH') }}"
+      external_root: "{{ env_var('MELTANO_PROJECT_ROOT') }}/data/catalog"
       threads: 4
     staging:
       type: duckdb
