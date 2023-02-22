@@ -4,3 +4,6 @@
 .DS_Store
 /data/catalog
 /data/raw
+/transform/target/
+/transform/dbt_packages/
+/transform/logs/
