@@ -42,23 +42,19 @@ def model(dbt, session):
             features[token] = True
         return features
 
-    df_transactions = dbt.ref('int_transactions_unioned').df()
-    df_transactions['category'] = ''
-    df_transactions['category_source'] = ''
+    int_transactions_unioned = dbt.ref('int_transactions_unioned').df()
+    transactions_categorized = dbt.source('finances', 'transactions_categorized').df()
 
-    df_train = df_transactions.loc[((df_transactions['category'].notna()) & (df_transactions['category_source']!='guess'))].reset_index(drop=True)
-    classifier = NaiveBayesClassifier(_get_training(df_train), _extractor)
+    category_columns = ['transaction_id', 'category', 'category_source']
+    merged_df = int_transactions_unioned.merge(transactions_categorized[category_columns], on='transaction_id', how='left', suffixes=('_left', '_right'))
 
-    df_classify = df_transactions.loc[((df_transactions['category'].isna()) | (df_transactions['category_source']=='guess'))].reset_index(drop=True)
+    train_df = merged_df[(merged_df['category'].notnull()) & (merged_df['category_source'] != 'guess')].reset_index(drop=True)
+    classify_df = merged_df[(merged_df['category'].isnull()) | (merged_df['category_source'] == 'guess')].reset_index(drop=True)
 
-    for index, row in df_classify.iterrows():
+    classifier = NaiveBayesClassifier(_get_training(train_df), _extractor)
+    classify_df['category'] = classify_df['description'].apply(lambda x: classifier.classify(_strip_numbers(x)))
+    classify_df['category_source'] = 'guess'
 
-        stripped_text = _strip_numbers(row['description'])
-        guessed_category = classifier.classify(stripped_text)
-        df_classify.at[index, 'category'] = guessed_category
-        df_classify.at[index, 'category_source'] = 'guess'
-
-    cols = ['transaction_id', 'category', 'category_source']
-    final_df = pd.concat([df_classify[cols], df_train[cols]]).reset_index(drop=True)
+    final_df = pd.concat([classify_df, train_df]).reset_index(drop=True)
 
     return final_df

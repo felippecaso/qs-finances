@@ -2,6 +2,10 @@ version: 2
 
 models:
   - name: transactions
+    config:
+      packages:
+        - pandas
+        - textblob
     columns:
       - name: transaction_id
       - name: date
@@ -13,9 +17,3 @@ models:
       - name: transaction_type
       - name: category
       - name: category_source
-
-  - name: transactions_category_guesses
-    config:
-      packages:
-        - pandas
-        - textblob
