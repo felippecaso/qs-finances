@@ -1,3 +1,9 @@
+{{
+  config(
+    materialized='table'
+  )
+}}
+
 SELECT dt.transaction_id,
        dt.date,
        dt.amount,

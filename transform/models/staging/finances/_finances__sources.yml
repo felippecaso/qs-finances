@@ -12,6 +12,9 @@ sources:
           - name: category
             tests:
               - unique
+      - name: transactions_categorized
+        meta:
+          external_location: '{{ env_var("MELTANO_PROJECT_ROOT") }}/data/input/private/{identifier}.csv'
       - name: btg_banking_automatic_yields
         meta:
           external_location: '{{ env_var("MELTANO_PROJECT_ROOT") }}/data/input/private/{identifier}.csv'
