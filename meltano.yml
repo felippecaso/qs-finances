@@ -132,7 +132,7 @@ plugins:
   utilities:
   - name: jupyterlab
     namespace: jupyterlab
-    pip_url: jupyterlab pandas duckdb
+    pip_url: jupyterlab jupysql pandas duckdb duckdb-engine
     executable: jupyter
     commands:
       launch:
