@@ -9,6 +9,10 @@ models:
       - name: description
       - name: currency
       - name: account
+      - name: bill_month
+      - name: transaction_type
+      - name: category
+      - name: category_source
 
   - name: transactions_category_guesses
     config:

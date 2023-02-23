@@ -42,7 +42,7 @@ def model(dbt, session):
             features[token] = True
         return features
 
-    df_transactions = dbt.ref('transactions').df()
+    df_transactions = dbt.ref('int_transactions_unioned').df()
     df_transactions['category'] = ''
     df_transactions['category_source'] = ''
 
