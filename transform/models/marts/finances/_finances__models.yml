@@ -16,4 +16,11 @@ models:
       - name: bill_month
       - name: transaction_type
       - name: category
+        tests:
+          - relationships:
+              to: source('finances', 'finances_categories')
+              field: category
       - name: category_source
+        tests:
+          - accepted_values:
+              values: ['manual', 'guess', 'confirmed_guess']

@@ -1,52 +1,52 @@
-category,category_type
-Other Income,
-↕️ Account Transfer,
-Dividends,
-MEI,
-Salary,
-Car,
-Misc,
-Gifts/Donations,
-Water Bill,
-Electric Bill,
-Restitution,
-Lending,
-Electronics,
-Benefits,
-Shopping,
-Car Licensing,
-Travel,
-Restaurants,
-Pharmacy,
-Books,
-Subscriptions,
-Groceries,
-Music,
-Haircut/Products,
-Beverages,
-Gas/Parking,
-Clothing,
-Pets,
-Games,
-Application,
-Cash,
-Side Projects,
-Public Transport,
-Withdrawal,
-➡️ Starting Balance,
-Gym,
-Uber,
-Bike,
-Investment Taxes,
-Work Expenses,
-Theatre/Cinema,
-Medical Bills,
-Internet Bill,
-Rent,
-Home Bills,
-Bars,
-Education,
-Buffer,
-Phone Bill,
-💳,
-Home,
+category,category_type,expense_type
+↕️ Account Transfer,,
+➡️ Starting Balance,,
+💳,,
+Buffer,,
+Application,investment,
+Investment Taxes,investment,
+Withdrawal,investment,
+Other Income,income,
+Dividends,income,
+Salary,income,
+Restitution,income,
+Benefits,income,
+Side Projects,income,
+MEI,expense,fixed
+Car,expense,fixed
+Water Bill,expense,fixed
+Electric Bill,expense,fixed
+Car Licensing,expense,fixed
+Pharmacy,expense,fixed
+Groceries,expense,fixed
+Haircut/Products,expense,fixed
+Gas/Parking,expense,fixed
+Pets,expense,fixed
+Public Transport,expense,fixed
+Gym,expense,fixed
+Bike,expense,fixed
+Medical Bills,expense,fixed
+Internet Bill,expense,fixed
+Rent,expense,fixed
+Home Bills,expense,fixed
+Phone Bill,expense,fixed
+Home,expense,fixed
+Work Expenses,expense,fixed
+Uber,expense,fixed
+Clothing,expense,fixed
+Misc,expense,variable
+Gifts/Donations,expense,variable
+Lending,expense,variable
+Electronics,expense,variable
+Shopping,expense,variable
+Travel,expense,variable
+Restaurants,expense,variable
+Books,expense,variable
+Subscriptions,expense,variable
+Music,expense,variable
+Beverages,expense,variable
+Games,expense,variable
+Cash,expense,variable
+Theatre/Cinema,expense,variable
+Bars,expense,variable
+Education,expense,variable

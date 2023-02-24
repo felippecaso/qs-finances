@@ -7,11 +7,22 @@ sources:
     tables:
       - name: finances_categories
         meta:
-          external_location: '{{ env_var("MELTANO_PROJECT_ROOT") }}/data/input/{identifier}.csv'
+          external_location: 'read_csv("{{ env_var("MELTANO_PROJECT_ROOT") }}/data/input/{identifier}.csv", AUTO_DETECT=TRUE, HEADER=TRUE, ALL_VARCHAR=TRUE)'
         columns:
           - name: category
             tests:
               - unique
+          - name: category_type
+            tests:
+              - accepted_values:
+                  values: ['investment', 'income', 'expense']
+          - name: expense_type
+            tests:
+              - accepted_values:
+                  values: ['fixed', 'variable']
+                  config:
+                    where: "category_type = 'expense'"
+                    
       - name: transactions_categorized
         meta:
           external_location: '{{ env_var("MELTANO_PROJECT_ROOT") }}/data/input/private/{identifier}.csv'
