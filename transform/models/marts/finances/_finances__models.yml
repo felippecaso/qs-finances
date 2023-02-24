@@ -2,6 +2,10 @@ version: 2
 
 models:
   - name: transactions
+    config:
+      packages:
+        - pandas
+        - textblob
     columns:
       - name: transaction_id
       - name: date
@@ -9,3 +13,7 @@ models:
       - name: description
       - name: currency
       - name: account
+      - name: bill_month
+      - name: transaction_type
+      - name: category
+      - name: category_source

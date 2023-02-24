@@ -12,6 +12,8 @@ plugins:
   - name: tap-btg
     namespace: tap_btg
     pip_url: git+https://github.com/felippecaso/tap-btg.git
+    settings:
+    - name: file_password
     config:
       files:
       - path: ./data/raw/btg_investments
@@ -20,8 +22,6 @@ plugins:
         type: credit_transactions
       - path: ./data/raw/btg_banking
         type: banking_transactions
-    settings:
-    - name: file_password
   - name: tap-nomad
     namespace: tap_nomad
     pip_url: git+https://github.com/felippecaso/tap-nomad.git
@@ -39,7 +39,7 @@ plugins:
         entity: caju_transactions
         keys: []
       stream_maps:
-        caju_transactions: 
+        caju_transactions:
           status: status
           date: data
           amount: valor
@@ -57,7 +57,7 @@ plugins:
         entity: alelo_transactions
         keys: []
       stream_maps:
-        alelo_transactions: 
+        alelo_transactions:
           description: title
           date: datetime.datetime.fromisoformat(date)
           title: __NULL__
@@ -70,7 +70,7 @@ plugins:
         keys: []
         encoding: latin-1
       stream_maps:
-        bb_transactions: 
+        bb_transactions:
           date: datetime.datetime.strptime(Data, '%d/%m/%Y')
           amount: Valor
           __else__: __NULL__
@@ -82,7 +82,7 @@ plugins:
         entity: c6_transactions
         keys: []
       stream_maps:
-        c6_transactions: 
+        c6_transactions:
           date: datetime.datetime.fromisoformat(date)
           description: title
           title: __NULL__
@@ -94,7 +94,7 @@ plugins:
         entity: nubank_transactions
         keys: []
       stream_maps:
-        nubank_transactions: 
+        nubank_transactions:
           date: datetime.datetime.fromisoformat(date)
           description: title
           target_category: category
@@ -107,9 +107,9 @@ plugins:
       - path: ./data/raw/itau
         entity: itau_transactions
         keys: []
-        delimiter: ";"
+        delimiter: ;
       stream_maps:
-        itau_transactions: 
+        itau_transactions:
           date: datetime.datetime.strptime(date, '%d/%m/%Y')
           amount: amount.replace(',', '.')
 
@@ -124,11 +124,22 @@ plugins:
   transformers:
   - name: dbt-duckdb
     variant: jwills
-    pip_url: dbt-core~=1.4.0 dbt-duckdb~=1.4.0
+    pip_url: dbt-core~=1.4.0 dbt-duckdb~=1.4.0 pandas textblob
     config:
-      path: $MELTANO_PROJECT_ROOT/data/catalog/qsmds.db
-      schema: main
+      path: $MELTANO_PROJECT_ROOT/data/catalog/qsmds.duckdb
       project_dir: $MELTANO_PROJECT_ROOT/transform
+
+  utilities:
+  - name: jupyterlab
+    namespace: jupyterlab
+    pip_url: jupyterlab jupysql pandas duckdb duckdb-engine
+    executable: jupyter
+    env:
+      DATABASE_URL: duckdb:///../data/catalog/qsmds.duckdb
+    commands:
+      launch:
+        args: lab
+        description: Start lab server
 
 jobs:
 - name: load-finances-to-csv
