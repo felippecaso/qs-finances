@@ -134,6 +134,8 @@ plugins:
     namespace: jupyterlab
     pip_url: jupyterlab jupysql pandas duckdb duckdb-engine
     executable: jupyter
+    env:
+      DATABASE_URL: duckdb:///../data/catalog/qsmds.duckdb
     commands:
       launch:
         args: lab
