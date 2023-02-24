@@ -1,0 +1,9 @@
+{
+    "dbt.profilesDirOverride": "${workspaceFolder}/.meltano/dbt_profile",
+    "dbt.dbtPythonPathOverride": "${workspaceFolder}/.meltano/transformers/dbt-duckdb/venv/bin/python",
+    "files.associations": {
+        "*.sql": "jinja-sql"
+    },
+    "dbt.queryLimit": 500,
+    "dbt.versionCheck": "neither"
+}
