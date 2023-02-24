@@ -55,6 +55,7 @@ def model(dbt, session):
     classify_df['category'] = classify_df['description'].apply(lambda x: classifier.classify(_strip_numbers(x)))
     classify_df['category_source'] = 'guess'
 
-    final_df = pd.concat([classify_df, train_df]).reset_index(drop=True)
+    finances_categories = dbt.source('finances', 'categories').df()
+    final_df = pd.concat([classify_df, train_df]).reset_index(drop=True).merge(finances_categories, on='category', how='left')
 
     return final_df

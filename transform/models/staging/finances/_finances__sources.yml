@@ -5,7 +5,8 @@ sources:
     meta:
       external_location: '{{ env_var("MELTANO_PROJECT_ROOT") }}/data/catalog/{identifier}.csv'
     tables:
-      - name: finances_categories
+      - name: categories
+        identifier: finances_categories
         meta:
           external_location: 'read_csv("{{ env_var("MELTANO_PROJECT_ROOT") }}/data/input/{identifier}.csv", AUTO_DETECT=TRUE, HEADER=TRUE, ALL_VARCHAR=TRUE)'
         columns:

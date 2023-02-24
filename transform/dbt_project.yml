@@ -23,3 +23,5 @@ models:
       +materialized: ephemeral
     marts:
       +materialized: table
+      +post-hook: 
+        - "{{ export_to_parquet( this ) }}"

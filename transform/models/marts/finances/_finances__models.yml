@@ -18,7 +18,7 @@ models:
       - name: category
         tests:
           - relationships:
-              to: source('finances', 'finances_categories')
+              to: source('finances', 'categories')
               field: category
       - name: category_source
         tests:
