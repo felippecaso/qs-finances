@@ -9,3 +9,4 @@
 /transform/dbt_packages/
 /transform/logs/
 .ipynb_checkpoints
+label-studio
