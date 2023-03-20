@@ -149,6 +149,7 @@ plugins:
     env:
       LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED: 'true'
       LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT: $MELTANO_PROJECT_ROOT/data/label-studio
+      EXPERIMENTAL_FEATURES: 'true'
     commands:
       init:
         args: init qs-mds --data-dir $MELTANO_PROJECT_ROOT/label-studio --username admin@labelstudio.com --password password
