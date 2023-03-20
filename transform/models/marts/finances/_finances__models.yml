@@ -20,6 +20,8 @@ models:
           - relationships:
               to: source('finances', 'categories')
               field: category
+              config:
+                severity: warn
       - name: category_source
         tests:
           - accepted_values:

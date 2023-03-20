@@ -22,8 +22,7 @@ sources:
               - accepted_values:
                   values: ['fixed', 'variable']
                   config:
-                    where: "category_type = 'expense'"
-                    
+                    where: "category_type = 'expense'"       
       - name: transactions_categorized
         meta:
           external_location: '{{ env_var("MELTANO_PROJECT_ROOT") }}/data/input/private/{identifier}.csv'
@@ -68,3 +67,9 @@ sources:
         identifier: btg_credit_transactions
       - name: nubank_transactions
         identifier: nubank_transactions
+  
+  - name: label-studio
+    meta:
+      external_location: 'read_ndjson_auto("{{ env_var("MELTANO_PROJECT_ROOT") }}/data/label-studio/output/{identifier}.jsonl")'
+    tables:
+      - name: categorized_transactions
