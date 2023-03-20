@@ -25,3 +25,4 @@ models:
       +materialized: table
       +post-hook: 
         - "{{ export_to_parquet( this ) }}"
+        - "{{ export_to_csv( this ) }}"

@@ -4,9 +4,6 @@ project_id: 3ac50c18-a099-4e52-854f-2835a667e40f
 
 environments:
 - name: dev
-  env:
-    LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED: 'true'
-    LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT: $MELTANO_PROJECT_ROOT/data/label-studio
 
 plugins:
   extractors:
@@ -133,7 +130,7 @@ plugins:
   utilities:
   - name: jupyterlab
     namespace: jupyterlab
-    pip_url: jupyterlab jupysql pandas duckdb duckdb-engine
+    pip_url: jupyterlab jupysql pandas duckdb duckdb-engine label_studio_sdk
     executable: jupyter
     env:
       DATABASE_URL: duckdb:///../data/catalog/qsmds.duckdb
@@ -146,12 +143,15 @@ plugins:
     namespace: label_studio
     pip_url: label-studio label-studio-sdk
     executable: label-studio
+    env:
+      LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED: 'true'
+      LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT: $MELTANO_PROJECT_ROOT/data/label-studio
     commands:
       init:
-        args: init --data-dir $MELTANO_PROJECT_ROOT/label-studio --username admin@labelstudio.com --password password
+        args: init qs-mds --data-dir $MELTANO_PROJECT_ROOT/label-studio --username admin@labelstudio.com --password password
         description: Initialize Label Studio project
       start:
-        args: start --data-dir $MELTANO_PROJECT_ROOT/label-studio
+        args: start qs-mds --data-dir $MELTANO_PROJECT_ROOT/label-studio
         description: Start Label Studio
 
 jobs:
