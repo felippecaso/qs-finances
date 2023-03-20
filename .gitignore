@@ -9,4 +9,5 @@
 /transform/dbt_packages/
 /transform/logs/
 .ipynb_checkpoints
+*.nbconvert.ipynb
 label-studio

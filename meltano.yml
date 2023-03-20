@@ -138,6 +138,9 @@ plugins:
       launch:
         args: lab
         description: Start lab server
+      execute-label-studio-setup:
+        args: nbconvert --to notebook --execute notebook/label_studio_setup.ipynb
+        description: Execute label_studio_setup notebook
 
   - name: label-studio
     namespace: label_studio

@@ -13,4 +13,4 @@ A Quantified Self project using the Modern Data Stack.
 1. Run `meltano invoke label-studio:init` to initalize the project.
 2. Start the server with `meltano invoke label-studio:start`.
 3. Log in with configured email and password and retrieve the API Key from Account & Settings. Create an env variable named `LABEL_STUDIO_API_KEY` with it.
-4. Execute `label_studio_setup.ipynb` to configure the categorizer project.
+4. Execute `meltano invoke jupyterlab:execute-label-studio-setup` to configure the categorizer project.
