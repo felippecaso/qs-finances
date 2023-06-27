@@ -1,0 +1,12 @@
+{
+  "plugin_type": "extractors",
+  "name": "tap-btg",
+  "namespace": "tap_btg",
+  "label": "tap-btg",
+  "pip_url": "git+https://github.com/felippecaso/tap-btg.git",
+  "settings": [
+    {
+      "name": "file_password"
+    }
+  ]
+}

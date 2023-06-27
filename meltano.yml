@@ -4,6 +4,7 @@ project_id: 3ac50c18-a099-4e52-854f-2835a667e40f
 
 environments:
 - name: dev
+- name: prod
 
 plugins:
   extractors:

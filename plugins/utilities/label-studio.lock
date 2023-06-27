@@ -1,0 +1,8 @@
+{
+  "plugin_type": "utilities",
+  "name": "label-studio",
+  "namespace": "label_studio",
+  "label": "label-studio",
+  "pip_url": "label-studio label-studio-sdk",
+  "executable": "label-studio"
+}

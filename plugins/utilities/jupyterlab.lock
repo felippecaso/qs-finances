@@ -1,0 +1,8 @@
+{
+  "plugin_type": "utilities",
+  "name": "jupyterlab",
+  "namespace": "jupyterlab",
+  "label": "jupyterlab",
+  "pip_url": "jupyterlab jupysql pandas duckdb duckdb-engine label_studio_sdk",
+  "executable": "jupyter"
+}

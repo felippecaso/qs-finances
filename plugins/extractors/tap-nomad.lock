@@ -1,0 +1,7 @@
+{
+  "plugin_type": "extractors",
+  "name": "tap-nomad",
+  "namespace": "tap_nomad",
+  "label": "tap-nomad",
+  "pip_url": "git+https://github.com/felippecaso/tap-nomad.git"
+}
