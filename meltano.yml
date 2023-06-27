@@ -132,8 +132,6 @@ plugins:
     namespace: jupyterlab
     pip_url: jupyterlab jupysql pandas duckdb duckdb-engine label_studio_sdk
     executable: jupyter
-    env:
-      DATABASE_URL: duckdb:///../data/catalog/qsmds.duckdb
     commands:
       launch:
         args: lab
@@ -142,22 +140,25 @@ plugins:
         args: nbconvert --to notebook --execute notebook/label_studio_setup.ipynb
         description: Execute label_studio_setup notebook
 
+    env:
+      DATABASE_URL: duckdb:///../data/catalog/qsmds.duckdb
   - name: label-studio
     namespace: label_studio
     pip_url: label-studio label-studio-sdk
     executable: label-studio
-    env:
-      LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED: 'true'
-      LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT: $MELTANO_PROJECT_ROOT/data/label-studio
-      EXPERIMENTAL_FEATURES: 'true'
     commands:
       init:
-        args: init qs-mds --data-dir $MELTANO_PROJECT_ROOT/label-studio --username admin@labelstudio.com --password password
+        args: init qs-mds --data-dir $MELTANO_PROJECT_ROOT/label-studio --username
+          admin@labelstudio.com --password password
         description: Initialize Label Studio project
       start:
         args: start qs-mds --data-dir $MELTANO_PROJECT_ROOT/label-studio
         description: Start Label Studio
 
+    env:
+      LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED: 'true'
+      LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT: $MELTANO_PROJECT_ROOT/data/label-studio
+      EXPERIMENTAL_FEATURES: 'true'
 jobs:
 - name: load-finances-to-csv
   tasks:
@@ -169,3 +170,7 @@ jobs:
   - tap-csv-itau target-csv
   - tap-btg target-csv
   - tap-nomad target-csv
+schedules:
+- name: weekly-finances-load
+  interval: '@weekly'
+  job: load-finances-to-csv
