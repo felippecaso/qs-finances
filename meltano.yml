@@ -15,102 +15,91 @@ plugins:
     - name: file_password
     config:
       files:
-      - path: ./data/raw/btg_investments
+      - path: ./data/raw/btg-investments
         type: investments_transactions
-      - path: ./data/raw/btg_credit
+      - path: ./data/raw/btg-credit
         type: credit_transactions
-      - path: ./data/raw/btg_banking
+      - path: ./data/raw/btg-banking
         type: banking_transactions
+
   - name: tap-nomad
     namespace: tap_nomad
     pip_url: git+https://github.com/felippecaso/tap-nomad.git
     config:
       files:
       - path: ./data/raw/nomad
-  - name: tap-csv
-    variant: meltanolabs
-    pip_url: git+https://github.com/MeltanoLabs/tap-csv.git
+
+  - name: tap-spreadsheets-anywhere
+    variant: ets
+    pip_url: git+https://github.com/ets/tap-spreadsheets-anywhere.git@main
+
   - name: tap-csv-caju
-    inherit_from: tap-csv
+    inherit_from: tap-spreadsheets-anywhere
     config:
-      files:
-      - path: ./data/raw/caju
-        entity: caju_transactions
-        keys: []
-      stream_maps:
-        caju_transactions:
-          status: status
-          date: data
-          amount: valor
-          action: record['ação']
-          action_type: record['tipo de ação']
-          target_category: record['categoria destino']
-          vendor: estabelecimento
-          deal_id: record['deal id']
-          __else__: __NULL__
+      tables:
+      - path: s3://felippe-data
+        name: caju_transactions
+        pattern: raw/caju/.*csv
+        start_date: '2000-01-01T00:00:00Z'
+        key_properties: []
+        format: csv
+
   - name: tap-csv-alelo
-    inherit_from: tap-csv
+    inherit_from: tap-spreadsheets-anywhere
     config:
-      files:
-      - path: ./data/raw/alelo
-        entity: alelo_transactions
-        keys: []
-      stream_maps:
-        alelo_transactions:
-          description: title
-          date: datetime.datetime.fromisoformat(date)
-          title: __NULL__
+      tables:
+      - path: s3://felippe-data
+        name: alelo_transactions
+        pattern: raw/alelo/.*csv
+        start_date: '2000-01-01T00:00:00Z'
+        key_properties: []
+        format: csv
+
   - name: tap-csv-bb
-    inherit_from: tap-csv
+    inherit_from: tap-spreadsheets-anywhere
     config:
-      files:
-      - path: ./data/raw/bb
-        entity: bb_transactions
-        keys: []
-        encoding: latin-1
-      stream_maps:
-        bb_transactions:
-          date: datetime.datetime.strptime(Data, '%d/%m/%Y')
-          amount: Valor
-          __else__: __NULL__
+      tables:
+      - path: s3://felippe-data
+        name: bb_transactions
+        pattern: raw/bb/.*csv
+        start_date: '2000-01-01T00:00:00Z'
+        key_properties: []
+        format: csv
+        encoding: latin1
+
   - name: tap-csv-c6
-    inherit_from: tap-csv
+    inherit_from: tap-spreadsheets-anywhere
     config:
-      files:
-      - path: ./data/raw/c6
-        entity: c6_transactions
-        keys: []
-      stream_maps:
-        c6_transactions:
-          date: datetime.datetime.fromisoformat(date)
-          description: title
-          title: __NULL__
+      tables:
+      - path: s3://felippe-data
+        name: c6_transactions
+        pattern: raw/c6/.*csv
+        start_date: '2000-01-01T00:00:00Z'
+        key_properties: []
+        format: csv
+
   - name: tap-csv-nubank
-    inherit_from: tap-csv
+    inherit_from: tap-spreadsheets-anywhere
     config:
-      files:
-      - path: ./data/raw/nubank
-        entity: nubank_transactions
-        keys: []
-      stream_maps:
-        nubank_transactions:
-          date: datetime.datetime.fromisoformat(date)
-          description: title
-          target_category: category
-          title: __NULL__
-          category: __NULL__
+      tables:
+      - path: s3://felippe-data
+        name: nubank_transactions
+        pattern: raw/nubank/.*csv
+        start_date: '2000-01-01T00:00:00Z'
+        key_properties: []
+        format: csv
+
   - name: tap-csv-itau
-    inherit_from: tap-csv
+    inherit_from: tap-spreadsheets-anywhere
     config:
-      files:
-      - path: ./data/raw/itau
-        entity: itau_transactions
-        keys: []
+      tables:
+      - path: s3://felippe-data
+        name: itau_transactions
+        pattern: raw/itau/.*csv
+        start_date: '2000-01-01T00:00:00Z'
+        key_properties: []
+        format: csv
         delimiter: ;
-      stream_maps:
-        itau_transactions:
-          date: datetime.datetime.strptime(date, '%d/%m/%Y')
-          amount: amount.replace(',', '.')
 
   loaders:
   - name: target-csv
@@ -140,9 +129,9 @@ plugins:
       execute-label-studio-setup:
         args: nbconvert --to notebook --execute notebook/label_studio_setup.ipynb
         description: Execute label_studio_setup notebook
-
     env:
       DATABASE_URL: duckdb:///../data/catalog/qsmds.duckdb
+
   - name: label-studio
     namespace: label_studio
     pip_url: label-studio label-studio-sdk
@@ -160,15 +149,77 @@ plugins:
       LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED: 'true'
       LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT: $MELTANO_PROJECT_ROOT/data/label-studio
       EXPERIMENTAL_FEATURES: 'true'
+
+  mappers:
+  - name: meltano-map-transformer
+    variant: meltano
+    pip_url: git+https://github.com/MeltanoLabs/meltano-map-transform.git
+    mappings:
+      - name: itau_transactions_mapper
+        config:
+          stream_maps:
+            itau_transactions:
+              date: datetime.datetime.strptime(date, '%d/%m/%Y')
+              amount: amount.replace(',', '.')
+      - name: nubank_transactions_mapper
+        config:
+          stream_maps:
+            nubank_transactions:
+              date: datetime.datetime.fromisoformat(date)
+              description: title
+              target_category: category
+              title: __NULL__
+              category: __NULL__
+      - name: c6_transactions_mapper
+        config:
+          stream_maps:
+            c6_transactions:
+              date: datetime.datetime.fromisoformat(date)
+              description: title
+              title: __NULL__
+      - name: bb_transactions_mapper
+        config:
+          stream_maps:
+            bb_transactions:
+              date: datetime.datetime.strptime(data, "%d/%m/%Y")
+              amount: valor
+              _smart_source_bucket: _smart_source_bucket
+              _smart_source_file: _smart_source_file
+              _smart_source_lineno: _smart_source_lineno
+              __else__: __NULL__
+      - name: alelo_transactions_mapper
+        config:
+          stream_maps:
+            alelo_transactions:
+              description: title
+              date: datetime.datetime.fromisoformat(date)
+              title: __NULL__
+      - name: caju_transactions_mapper
+        config:
+          stream_maps:
+            caju_transactions:
+              status: status
+              date: data
+              amount: valor
+              action: record['ação']
+              action_type: record['tipo_de_ação']
+              target_category: record['categoria_destino']
+              vendor: estabelecimento
+              deal_id: deal_id
+              _smart_source_bucket: _smart_source_bucket
+              _smart_source_file: _smart_source_file
+              _smart_source_lineno: _smart_source_lineno
+              __else__: __NULL__
+
 jobs:
 - name: load-finances-to-csv
   tasks:
-  - tap-csv-caju target-csv
-  - tap-csv-alelo target-csv
-  - tap-csv-bb target-csv
-  - tap-csv-c6 target-csv
-  - tap-csv-nubank target-csv
-  - tap-csv-itau target-csv
+  - tap-csv-caju caju_transactions_mapper target-csv
+  - tap-csv-alelo alelo_transactions_mapper target-csv
+  - tap-csv-bb bb_transactions_mapper target-csv
+  - tap-csv-c6 c6_transactions_mapper target-csv
+  - tap-csv-nubank nubank_transactions_mapper target-csv
+  - tap-csv-itau itau_transactions_mapper target-csv
   - tap-btg target-csv
   - tap-nomad target-csv
 schedules:
