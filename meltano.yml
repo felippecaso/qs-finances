@@ -15,11 +15,11 @@ plugins:
     - name: file_password
     config:
       files:
-      - path: ./data/raw/btg-investments
+      - path: s3://felippe-data/raw/btg-investments/
         type: investments_transactions
-      - path: ./data/raw/btg-credit
+      - path: s3://felippe-data/raw/btg-credit/
         type: credit_transactions
-      - path: ./data/raw/btg-banking
+      - path: s3://felippe-data/raw/btg-banking/
         type: banking_transactions
 
   - name: tap-nomad
@@ -27,7 +27,7 @@ plugins:
     pip_url: git+https://github.com/felippecaso/tap-nomad.git
     config:
       files:
-      - path: ./data/raw/nomad
+      - path: s3://felippe-data/raw/nomad/
 
   - name: tap-spreadsheets-anywhere
     variant: ets
