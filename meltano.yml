@@ -113,7 +113,7 @@ plugins:
     pip_url: target-duckdb~=0.6
     config:
       path: 'md:'
-      default_target_schema: 'meltano'
+      default_target_schema: meltano
       primary_key_required: false
 
   transformers:
@@ -168,6 +168,8 @@ plugins:
           itau_transactions:
             date: datetime.datetime.strptime(date, '%d/%m/%Y')
             amount: amount.replace(',', '.')
+            __filter__: ('SALDO' not in description) and ('APL APLIC' not in description)
+              and ('RES APLIC' not in description)
     - name: nubank_transactions_mapper
       config:
         stream_maps:
@@ -190,10 +192,6 @@ plugins:
           bb_transactions:
             date: datetime.datetime.strptime(data, "%d/%m/%Y")
             amount: valor
-            _smart_source_bucket: _smart_source_bucket
-            _smart_source_file: _smart_source_file
-            _smart_source_lineno: _smart_source_lineno
-            __else__: __NULL__
     - name: alelo_transactions_mapper
       config:
         stream_maps:
@@ -217,9 +215,20 @@ plugins:
             _smart_source_file: _smart_source_file
             _smart_source_lineno: _smart_source_lineno
             __else__: __NULL__
+            __filter__: status == 'Completo'
+    - name: nomad_transactions_mapper
+      config:
+        stream_maps:
+          nomad_transactions:
+            __filter__: status == 'Concluído'
+    - name: btg_mapper
+      config:
+        stream_maps:
+          btg_investments_transactions:
+            __filter__: description != 'Rendimento Disponível - Saldo Remunerado'
 
 jobs:
-- name: load-finances-to-csv
+- name: load-finances-to-duckdb
   tasks:
   - tap-csv-caju caju_transactions_mapper target-duckdb
   - tap-csv-alelo alelo_transactions_mapper target-duckdb
@@ -227,8 +236,18 @@ jobs:
   - tap-csv-c6 c6_transactions_mapper target-duckdb
   - tap-csv-nubank nubank_transactions_mapper target-duckdb
   - tap-csv-itau itau_transactions_mapper target-duckdb
-  - tap-btg target-duckdb
-  - tap-nomad target-duckdb
+  - tap-btg btg_mapper target-duckdb
+  - tap-nomad nomad_transactions_mapper target-duckdb
+- name: load-finances-to-csv
+  tasks:
+  - tap-csv-caju caju_transactions_mapper target-csv
+  - tap-csv-alelo alelo_transactions_mapper target-csv
+  - tap-csv-bb bb_transactions_mapper target-csv
+  - tap-csv-c6 c6_transactions_mapper target-csv
+  - tap-csv-nubank nubank_transactions_mapper target-csv
+  - tap-csv-itau itau_transactions_mapper target-csv
+  - tap-btg btg_mapper target-csv
+  - tap-nomad nomad_transactions_mapper target-csv
 schedules:
 - name: weekly-finances-load
   interval: '@weekly'
