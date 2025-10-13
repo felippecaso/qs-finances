@@ -1,9 +1,6 @@
 build:
 	meltano install
 
-ls-run:
-	meltano invoke label-studio:start
-
 rill-install:
 	curl -s https://cdn.rilldata.com/install.sh | bash
 

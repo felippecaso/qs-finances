@@ -67,9 +67,3 @@ sources:
         identifier: btg_credit_transactions
       - name: nubank_transactions
         identifier: nubank_transactions
-  
-  - name: label-studio
-    meta:
-      external_location: 'read_ndjson_auto("{{ env_var("MELTANO_PROJECT_ROOT") }}/data/label-studio/output/{identifier}.jsonl")'
-    tables:
-      - name: categorized_transactions
