@@ -10,43 +10,56 @@ This is a **Quantified Self project for personal finances data using the Modern 
 
 ### Initial Setup
 ```bash
-# Install all Meltano plugins and dependencies
+# Install Python dependencies with uv and Meltano plugins
 make build
 
-# Alternative: Install Meltano plugins directly
-meltano install
+# Alternative: Manual installation
+uv sync                    # Install Python dependencies
+uv run meltano install     # Install Meltano plugins
+
+# Development setup with additional tools
+make dev-install           # Install with linting, testing, formatting tools
 ```
 
 ### Data Pipeline Operations
 ```bash
 # Load data from all financial sources to DuckDB
-meltano run load-finances-to-duckdb
+uv run meltano run load-finances-to-duckdb
+# OR: make load-to-duckdb
 
 # Load data from all financial sources to CSV/Parquet files
-meltano run load-finances-to-csv
+uv run meltano run load-finances-to-csv
+# OR: make load-to-csv
 
 # Run dbt transformations
-meltano invoke dbt-duckdb:run
+uv run meltano invoke dbt-duckdb:run
+# OR: make dbt-run
 
 # Test dbt models
-meltano invoke dbt-duckdb:test
+uv run meltano invoke dbt-duckdb:test
+# OR: make dbt-test
 
 # Generate dbt documentation
-meltano invoke dbt-duckdb:docs generate
+uv run meltano invoke dbt-duckdb:docs generate
+# OR: make dbt-docs
 ```
 
 ### Individual Data Source Extraction
 ```bash
 # Extract from specific sources (examples)
-meltano run tap-csv-nubank nubank_transactions_mapper target-duckdb
-meltano run tap-btg btg_mapper target-duckdb
-meltano run tap-csv-itau itau_transactions_mapper target-duckdb
+uv run meltano run tap-csv-nubank nubank_transactions_mapper target-duckdb
+uv run meltano run tap-csv-itau itau_transactions_mapper target-duckdb
+
+# Note: Custom taps require Python 3.13 compatibility updates
+# uv run meltano run tap-btg btg_mapper target-duckdb
+# uv run meltano run tap-nomad nomad_transactions_mapper target-duckdb
 ```
 
 ### Development Environment
 ```bash
 # Start Jupyter Lab for data exploration
-meltano invoke jupyterlab:launch
+uv run meltano invoke jupyterlab:launch
+# OR: make jupyter
 ```
 
 ### Visualization with Rill
@@ -59,6 +72,33 @@ make rill-install  # Install Rill
 make rill-build    # Build Rill project with data sources
 make rill-run      # Start Rill server
 ```
+
+## Modern Development Workflow
+
+This project uses **Python 3.13+** and **uv** for fast, reliable package management.
+
+### Code Quality Tools
+```bash
+# Development setup with linting and testing
+make dev-install
+
+# Format code automatically
+make format             # Black + Ruff autofix
+
+# Check code quality
+make lint               # Ruff + MyPy
+
+# Run tests
+make test               # Pytest
+make test-cov           # Pytest with coverage
+```
+
+### Key Technologies
+- **uv**: Ultra-fast Python package installer and resolver
+- **Python 3.13**: Latest Python with performance improvements
+- **pyproject.toml**: Modern Python project configuration
+- **Black + Ruff**: Code formatting and linting
+- **pytest**: Testing framework
 
 ## Architecture Overview
 
