@@ -1,18 +1,8 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/docker-existing-dockerfile
 {
-	"name": "Meltano MDS",
-
-	// Sets the run context to one level up instead of the .devcontainer folder.
-	"context": "..",
-	"build": {
-        "args": {
-            "VARIANT": "3.9"
-        }
-    },
-
-	// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
-	"dockerFile": "Dockerfile.dev-container",
+	"name": "QS-Finances Modern Data Stack",
+	"image": "mcr.microsoft.com/devcontainers/python:3.13",
     "settings": {
         "python.pythonPath": "/usr/local/bin/python",
         "python.languageServer": "Pylance",
@@ -42,8 +32,8 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
-	// Uncomment the next line to run commands after the container is created - for example installing curl.
-	"postCreateCommand": "pip3 install pipx && pipx install meltano"
+	// Install uv and sync dependencies
+	"postCreateCommand": "curl -LsSf https://astral.sh/uv/install.sh | sh && source ~/.bashrc && uv sync"
 
 	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
 	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
