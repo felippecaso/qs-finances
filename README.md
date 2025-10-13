@@ -13,8 +13,8 @@ This project follows an **ELT (Extract, Load, Transform)** architecture:
 ## Quick Start
 
 ### Prerequisites
-- Python 3.9+
-- pip/pipx
+- **Python 3.13+** (required for latest dependencies)
+- **uv** (fast Python package manager) - [Install uv](https://docs.astral.sh/uv/getting-started/installation/)
 - AWS credentials (for S3 data sources)
 - Git
 
@@ -26,11 +26,15 @@ This project follows an **ELT (Extract, Load, Transform)** architecture:
    cd qs-finances
    ```
 
-2. **Install Meltano and dependencies**
+2. **Install dependencies with uv**
    ```bash
+   # Install all Python dependencies
+   uv sync
+   
+   # Install Meltano plugins
    make build
-   # OR
-   meltano install
+   # OR manually:
+   uv run meltano install
    ```
 
 3. **Set up environment variables** (see [Environment Variables](#environment-variables) section)
@@ -38,13 +42,19 @@ This project follows an **ELT (Extract, Load, Transform)** architecture:
 4. **Run the pipeline**
    ```bash
    # Load data to DuckDB
-   meltano run load-finances-to-duckdb
+   uv run meltano run load-finances-to-duckdb
+   # OR use make target:
+   make load-to-duckdb
    
-   # OR load data to CSV/Parquet files
-   meltano run load-finances-to-csv
+   # Load data to CSV/Parquet files
+   uv run meltano run load-finances-to-csv
+   # OR use make target:
+   make load-to-csv
    
    # Run dbt transformations
-   meltano invoke dbt-duckdb:run
+   uv run meltano invoke dbt-duckdb:run
+   # OR use make target:
+   make dbt-run
    ```
 
 ## Environment Variables
@@ -103,9 +113,12 @@ All raw files are stored in `s3://felippe-data/raw/` with institution-specific f
 ```
 qs-finances/
 ├── .env                          # Environment variables (create this)
+├── .env.example                  # Environment variables template
+├── pyproject.toml                # Modern Python project configuration
 ├── meltano.yml                   # Main pipeline configuration
-├── Makefile                      # Build and utility commands
+├── Makefile                      # Build and utility commands (uv-based)
 ├── WARP.md                       # Development guidance
+├── .venv/                        # Virtual environment (created by uv)
 ├── data/
 │   ├── input/                    # Input configuration files
 │   │   ├── finances_categories.csv  # Transaction categories
@@ -121,37 +134,87 @@ qs-finances/
 └── .devcontainer/               # VS Code dev container config
 ```
 
+## Modern Development Workflow
+
+This project uses **uv** for fast, reliable Python package management and **make** targets for common operations.
+
+### Available Make Targets
+
+```bash
+# Environment setup
+make build          # Install Python deps and Meltano plugins
+make dev-install    # Install with development dependencies
+
+# Code quality
+make format         # Format code with black and ruff
+make lint           # Lint code with ruff and mypy
+make test           # Run tests with pytest
+make test-cov       # Run tests with coverage
+
+# Pipeline operations
+make load-to-duckdb # Load all data to DuckDB
+make load-to-csv    # Load all data to CSV/Parquet
+make dbt-run        # Run dbt transformations
+make dbt-test       # Test dbt models
+make dbt-docs       # Generate dbt documentation
+make jupyter        # Start Jupyter Lab
+
+# Visualization
+make rill-visuals   # Install, build and run Rill
+```
+
+### Development Dependencies
+
+Install additional development tools:
+```bash
+# Install development dependencies (linting, testing, formatting)
+make dev-install
+
+# Format your code
+make format
+
+# Run linting
+make lint
+```
+
 ## Data Pipeline Commands
 
 ### Core Pipeline Operations
 ```bash
 # Load all financial data to DuckDB
-meltano run load-finances-to-duckdb
+uv run meltano run load-finances-to-duckdb
+# OR: make load-to-duckdb
 
 # Load all financial data to CSV/Parquet files
-meltano run load-finances-to-csv
+uv run meltano run load-finances-to-csv
+# OR: make load-to-csv
 
 # Run dbt transformations
-meltano invoke dbt-duckdb:run
+uv run meltano invoke dbt-duckdb:run
+# OR: make dbt-run
 
 # Test dbt models
-meltano invoke dbt-duckdb:test
+uv run meltano invoke dbt-duckdb:test
+# OR: make dbt-test
 
 # Generate dbt documentation
-meltano invoke dbt-duckdb:docs generate
+uv run meltano invoke dbt-duckdb:docs generate
+# OR: make dbt-docs
 ```
 
 ### Individual Source Extraction
 ```bash
-# Extract from specific sources
-meltano run tap-csv-nubank nubank_transactions_mapper target-duckdb
-meltano run tap-btg btg_mapper target-duckdb
-meltano run tap-csv-itau itau_transactions_mapper target-duckdb
-meltano run tap-csv-caju caju_transactions_mapper target-duckdb
-meltano run tap-csv-alelo alelo_transactions_mapper target-duckdb
-meltano run tap-csv-bb bb_transactions_mapper target-duckdb
-meltano run tap-csv-c6 c6_transactions_mapper target-duckdb
-meltano run tap-nomad nomad_transactions_mapper target-duckdb
+# Extract from specific sources (using uv run)
+uv run meltano run tap-csv-nubank nubank_transactions_mapper target-duckdb
+uv run meltano run tap-csv-itau itau_transactions_mapper target-duckdb
+uv run meltano run tap-csv-caju caju_transactions_mapper target-duckdb
+uv run meltano run tap-csv-alelo alelo_transactions_mapper target-duckdb
+uv run meltano run tap-csv-bb bb_transactions_mapper target-duckdb
+uv run meltano run tap-csv-c6 c6_transactions_mapper target-duckdb
+
+# Note: Custom taps (tap-btg, tap-nomad) require Python 3.13 compatibility updates
+# uv run meltano run tap-btg btg_mapper target-duckdb
+# uv run meltano run tap-nomad nomad_transactions_mapper target-duckdb
 ```
 
 ## Development Environment
@@ -159,7 +222,8 @@ meltano run tap-nomad nomad_transactions_mapper target-duckdb
 ### Jupyter Lab
 ```bash
 # Start Jupyter Lab for data exploration
-meltano invoke jupyterlab:launch
+uv run meltano invoke jupyterlab:launch
+# OR: make jupyter
 ```
 
 ### Data Visualization with Rill
@@ -175,9 +239,11 @@ make rill-run      # Start Rill server
 
 ### VS Code DevContainer
 The project includes a complete development container:
-- Python 3.9 with Meltano pre-installed
+- **Python 3.13** with modern tooling
+- **uv** for fast package management
 - dbt and SQL extensions configured
 - File associations for `.sql` files as `jinja-sql`
+- Automatic dependency installation on container creation
 
 ## Data Schema
 
