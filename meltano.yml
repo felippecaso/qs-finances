@@ -20,11 +20,11 @@ environments:
       loaders:
       - name: target-duckdb
         config:
-          path: md:qsmds
+          path: md:finances
       transformers:
       - name: dbt-duckdb
         config:
-          path: md:qsmds
+          path: md:finances
 
 plugins:
   extractors:
