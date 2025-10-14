@@ -110,7 +110,7 @@ plugins:
 
   - name: target-duckdb
     variant: jwills
-    pip_url: target-duckdb~=0.6
+    pip_url: target-duckdb~=0.8
     config:
       path: 'md:'
       default_target_schema: meltano
@@ -119,7 +119,7 @@ plugins:
   transformers:
   - name: dbt-duckdb
     variant: jwills
-    pip_url: dbt-core~=1.4.0 dbt-duckdb~=1.4.0 pandas textblob
+    pip_url: dbt-core~=1.10.0 dbt-duckdb~=1.9.0 pandas textblob
     config:
       path: $MELTANO_PROJECT_ROOT/data/catalog/qsmds.duckdb
       project_dir: $MELTANO_PROJECT_ROOT/transform
