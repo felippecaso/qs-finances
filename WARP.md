@@ -6,6 +6,26 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 
 This is a **Quantified Self project for personal finances data using the Modern Data Stack**. The project extracts financial transaction data from multiple sources (banks, credit cards, investment platforms) and processes it through a Meltano-based ELT pipeline with dbt transformations, storing the results in DuckDB and exporting to CSV/Parquet formats.
 
+## Environment Management
+
+This project supports two environments:
+- **dev**: Uses local DuckDB file (`./data/catalog/qsmds.duckdb`) for development
+- **prod**: Uses MotherDuck cloud database (`md:qsmds`) for production
+
+### Environment Selection
+```bash
+# Check current environment (defaults to 'dev')
+uv run meltano config meltano environment
+
+# Switch to development environment (default)
+export MELTANO_ENVIRONMENT=dev
+# OR: uv run meltano --environment=dev <command>
+
+# Switch to production environment
+export MELTANO_ENVIRONMENT=prod
+# OR: uv run meltano --environment=prod <command>
+```
+
 ## Key Development Commands
 
 ### Initial Setup
@@ -22,8 +42,10 @@ make dev-install           # Install with linting, testing, formatting tools
 ```
 
 ### Data Pipeline Operations
+
+#### Development Environment (Local DuckDB)
 ```bash
-# Load data from all financial sources to DuckDB
+# Load data from all financial sources to local DuckDB
 uv run meltano run load-finances-to-duckdb
 # OR: make load-to-duckdb
 
@@ -31,7 +53,7 @@ uv run meltano run load-finances-to-duckdb
 uv run meltano run load-finances-to-csv
 # OR: make load-to-csv
 
-# Run dbt transformations
+# Run dbt transformations on local DuckDB
 uv run meltano invoke dbt-duckdb:run
 # OR: make dbt-run
 
@@ -44,23 +66,43 @@ uv run meltano invoke dbt-duckdb:docs generate
 # OR: make dbt-docs
 ```
 
-### Individual Data Source Extraction
+#### Production Environment (MotherDuck Cloud)
 ```bash
-# Extract from specific sources (examples)
+# Load data to MotherDuck (requires MOTHERDUCK_TOKEN env var)
+export MELTANO_ENVIRONMENT=prod
+uv run meltano run load-finances-to-duckdb
+
+# Run dbt transformations on MotherDuck
+uv run meltano --environment=prod invoke dbt-duckdb:run
+
+# Test dbt models on MotherDuck
+uv run meltano --environment=prod invoke dbt-duckdb:test
+```
+
+### Individual Data Source Extraction
+
+#### Development Environment (Local DuckDB)
+```bash
+# Extract from specific sources to local DuckDB (default dev environment)
 uv run meltano run tap-csv-nubank nubank_transactions_mapper target-duckdb
 uv run meltano run tap-csv-itau itau_transactions_mapper target-duckdb
+uv run meltano run tap-csv-c6 c6_transactions_mapper target-duckdb
+uv run meltano run tap-csv-bb bb_transactions_mapper target-duckdb
+uv run meltano run tap-csv-alelo alelo_transactions_mapper target-duckdb
+uv run meltano run tap-csv-caju caju_transactions_mapper target-duckdb
 
 # Note: Custom taps require Python 3.13 compatibility updates
 # uv run meltano run tap-btg btg_mapper target-duckdb
 # uv run meltano run tap-nomad nomad_transactions_mapper target-duckdb
 ```
 
-### Development Environment
+#### Production Environment (MotherDuck Cloud)
 ```bash
-# Start Jupyter Lab for data exploration
-uv run meltano invoke jupyterlab:launch
-# OR: make jupyter
+# Extract from specific sources to MotherDuck
+uv run meltano --environment=prod run tap-csv-nubank nubank_transactions_mapper target-duckdb
+uv run meltano --environment=prod run tap-csv-itau itau_transactions_mapper target-duckdb
 ```
+
 
 ### Visualization with Rill
 ```bash
@@ -115,7 +157,6 @@ The project follows an ELT (Extract, Load, Transform) pattern:
 - **Extractors**: Custom taps for BTG, Nomad, and CSV-based sources (Nubank, Itaú, C6, BB, Alelo, Caju)
 - **Loaders**: DuckDB and CSV targets for different storage needs
 - **Mappers**: Stream transformations for data standardization (date parsing, field mapping, filtering)
-- **Utilities**: JupyterLab for analysis
 
 #### Data Sources Integration
 - **S3-based sources**: Raw files stored in `s3://felippe-data/raw/` for different institutions
@@ -130,9 +171,10 @@ The project follows an ELT (Extract, Load, Transform) pattern:
 - **Custom macros**: Auto-export functionality for models to multiple formats
 
 #### Data Storage
-- **Primary database**: DuckDB (`data/catalog/qsmds.duckdb`)
-- **Export formats**: CSV and Parquet files in `data/catalog/`
-- **Raw data**: S3 bucket with institution-specific folders
+- **Development database**: Local DuckDB (`./data/catalog/qsmds.duckdb`)
+- **Production database**: MotherDuck cloud database (`md:qsmds`)
+- **Export formats**: CSV and Parquet files in `data/catalog/` (dev only)
+- **Raw data**: S3 bucket with institution-specific folders (`s3://felippe-data/raw/`)
 
 ### Development Container
 The project includes DevContainer configuration for VS Code:

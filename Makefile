@@ -38,8 +38,6 @@ dbt-test:
 dbt-docs:
 	uv run meltano invoke dbt-duckdb:docs generate
 
-jupyter:
-	uv run meltano invoke jupyterlab:launch
 
 # Data visualization
 rill-install:

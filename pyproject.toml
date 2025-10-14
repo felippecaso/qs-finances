@@ -33,9 +33,6 @@ dependencies = [
     # Text processing
     "textblob>=0.19.0",
     
-    # Development and analysis tools
-    "jupyterlab>=4.4.0",
-    "jupysql>=0.11.0",
 ]
 
 [project.optional-dependencies]

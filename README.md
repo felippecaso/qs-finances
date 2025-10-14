@@ -10,6 +10,28 @@ This project follows an **ELT (Extract, Load, Transform)** architecture:
 3. **Transform**: dbt handles data modeling and transformations
 4. **Visualize**: Rill provides interactive dashboards
 
+## Environment Management
+
+The project supports two environments with different database backends:
+
+- **dev** (default): Uses local DuckDB file (`./data/catalog/qsmds.duckdb`)
+- **prod**: Uses MotherDuck cloud database (`md:qsmds`)
+
+### Environment Selection
+
+```bash
+# Check current environment (defaults to 'dev')
+uv run meltano config meltano environment
+
+# Set environment for current session
+export MELTANO_ENVIRONMENT=dev    # Development (local DuckDB)
+export MELTANO_ENVIRONMENT=prod   # Production (MotherDuck)
+
+# Or specify environment per command
+uv run meltano --environment=dev run load-finances-to-duckdb
+uv run meltano --environment=prod run load-finances-to-duckdb
+```
+
 ## Quick Start
 
 ### Prerequisites
@@ -17,6 +39,7 @@ This project follows an **ELT (Extract, Load, Transform)** architecture:
 - **uv** (fast Python package manager) - [Install uv](https://docs.astral.sh/uv/getting-started/installation/)
 - AWS credentials (for S3 data sources)
 - Git
+- **For production**: MotherDuck account and token
 
 ### Installation
 
@@ -66,10 +89,7 @@ Create a `.env` file in the project root with the following variables:
 ```bash
 # Meltano Core
 MELTANO_PROJECT_ROOT=/path/to/your/project
-MELTANO_ENVIRONMENT=dev
-
-# dbt Configuration
-DBT_DUCKDB_PATH=/path/to/your/project/data/catalog/qsmds.duckdb
+MELTANO_ENVIRONMENT=dev  # or 'prod' for production
 
 # AWS S3 Access (for financial data sources)
 AWS_ACCESS_KEY_ID=your-aws-access-key
@@ -78,6 +98,9 @@ AWS_DEFAULT_REGION=us-east-1
 
 # BTG Pactual (for encrypted files)
 TAP_BTG_FILE_PASSWORD=your-btg-file-password
+
+# MotherDuck (required for prod environment)
+MOTHERDUCK_TOKEN=your-motherduck-token  # Get from https://motherduck.com/
 ```
 
 ### Optional Environment Variables
@@ -130,7 +153,6 @@ qs-finances/
 │   ├── models/                   # dbt models
 │   ├── macros/                   # Custom dbt macros
 │   └── profiles/                 # dbt profiles
-├── notebook/                     # Jupyter notebooks for exploration
 └── .devcontainer/               # VS Code dev container config
 ```
 
@@ -157,7 +179,6 @@ make load-to-csv    # Load all data to CSV/Parquet
 make dbt-run        # Run dbt transformations
 make dbt-test       # Test dbt models
 make dbt-docs       # Generate dbt documentation
-make jupyter        # Start Jupyter Lab
 
 # Visualization
 make rill-visuals   # Install, build and run Rill
@@ -179,9 +200,9 @@ make lint
 
 ## Data Pipeline Commands
 
-### Core Pipeline Operations
+### Development Environment (Local DuckDB)
 ```bash
-# Load all financial data to DuckDB
+# Load all financial data to local DuckDB (default environment)
 uv run meltano run load-finances-to-duckdb
 # OR: make load-to-duckdb
 
@@ -189,13 +210,26 @@ uv run meltano run load-finances-to-duckdb
 uv run meltano run load-finances-to-csv
 # OR: make load-to-csv
 
-# Run dbt transformations
+# Run dbt transformations on local database
 uv run meltano invoke dbt-duckdb:run
 # OR: make dbt-run
 
 # Test dbt models
 uv run meltano invoke dbt-duckdb:test
 # OR: make dbt-test
+```
+
+### Production Environment (MotherDuck)
+```bash
+# Load all financial data to MotherDuck (requires MOTHERDUCK_TOKEN)
+export MELTANO_ENVIRONMENT=prod
+uv run meltano run load-finances-to-duckdb
+
+# Run dbt transformations on MotherDuck
+uv run meltano --environment=prod invoke dbt-duckdb:run
+
+# Test dbt models on MotherDuck
+uv run meltano --environment=prod invoke dbt-duckdb:test
 
 # Generate dbt documentation
 uv run meltano invoke dbt-duckdb:docs generate
@@ -219,12 +253,6 @@ uv run meltano run tap-csv-c6 c6_transactions_mapper target-duckdb
 
 ## Development Environment
 
-### Jupyter Lab
-```bash
-# Start Jupyter Lab for data exploration
-uv run meltano invoke jupyterlab:launch
-# OR: make jupyter
-```
 
 ### Data Visualization with Rill
 ```bash
